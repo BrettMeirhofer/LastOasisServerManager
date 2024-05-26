@@ -185,10 +185,31 @@ def restart_all_tiles(wait):
     wait_restart_time = 0
     stop_processes()
     time.sleep(5)
+    update_game()
     out_of_date, updated_mods_info = check_mod_updates()
     download_mods(out_of_date, updated_mods_info)
     time.sleep(wait)
     start_processes()
+
+
+def update_game():
+    # Define the SteamCMD command
+    steamcmd_command = [
+        "{}steamcmd".format(config["steam_cmd_path"]),
+        "+login", "anonymous",
+        "+force_install_dir", config["folder_path"],
+        "+app_update 920720 -beta sdktest"
+        "validate",
+        "+quit"
+    ]
+
+    try:
+        # Run the SteamCMD command
+        result = subprocess.run(steamcmd_command, check=True, capture_output=True, text=True)
+        print(result.stdout)
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}")
+        print(e.output)
 
 
 def main():
