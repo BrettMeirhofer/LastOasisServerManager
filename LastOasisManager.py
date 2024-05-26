@@ -113,14 +113,10 @@ def check_mod_updates():
     try:
         update_config()
         mods_info = read_json('mods_info.json')
-        mod_ids = list(mods_info.keys())
-        print(mod_ids)
-
-        add_new_mod_ids(mods_info, config["mods"].split(","))
 
         print("Added new mod ids")
 
-        out_of_date, updated_mods_info = update_mods_info(mods_info, mod_ids + config["mods"].split(","))
+        out_of_date, updated_mods_info = update_mods_info(mods_info, config["mods"].split(","))
 
         print("Out-of-date mods:", out_of_date)
         return out_of_date, updated_mods_info
@@ -132,6 +128,10 @@ def check_mod_updates():
 def download_mods(workshop_ids, updated_mods_info):
     try:
         mods_folder = config["folder_path"] + "Mist/Content/Mods"
+        if not os.path.exists(mods_folder):
+            # Create the folder if it does not exist
+            os.makedirs(mods_folder)
+
         for item in os.listdir(mods_folder):
             item_path = os.path.join(mods_folder, item)
             try:
@@ -194,28 +194,31 @@ def restart_all_tiles(wait):
 
 def update_game():
     # Define the SteamCMD command
-    print("Starting steam update")
-    steamcmd_command = [
-        "{}steamcmd".format(config["steam_cmd_path"]),
-        "+force_install_dir", config["folder_path"],
-        "login anonymous +app_update 920720 validate -beta sdktest"
-    ]
+    try:
+        print("Starting steam update")
+        steamcmd_command = "{}steamcmd +login anonymous +app_update 920720 validate -beta sdktest +quit".format(
+            config["steam_cmd_path"])
 
-    process = subprocess.Popen(steamcmd_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        print(steamcmd_command)
 
-    # Read and print the output line by line
-    while True:
-        output = process.stdout.readline()
-        if output == '' and process.poll() is not None:
-            break
-        if output:
-            print(output.strip())
+        process = subprocess.Popen(steamcmd_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-    # Capture any remaining output
-    stdout, stderr = process.communicate()
-    print(stdout)
-    if stderr:
-        print(stderr)
+        # Read and print the output line by line
+        while True:
+            output = process.stdout.readline()
+            if output == '' and process.poll() is not None:
+                break
+            if output:
+                print(output.strip())
+
+        # Capture any remaining output
+        stdout, stderr = process.communicate()
+        print(stdout)
+        if stderr:
+            print(stderr)
+
+    except Exception as E:
+        print(E)
 
 
 def main():
