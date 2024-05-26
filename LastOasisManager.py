@@ -235,7 +235,7 @@ def main():
 
             send_discord_message(config["server_status_webhook"], "Out-of-date mods restarting tiles in {} seconds: {}"
                                  .format(config["restart_time"], workshop))
-            admin_writer.write("Restart")
+            admin_writer.write("Restart", config["folder_path"])
             time.sleep(config["restart_time"])
             restart_all_tiles(1)
 
@@ -243,6 +243,6 @@ def main():
 try:
     main()
 except KeyboardInterrupt:
-    admin_writer.write("Restart")
+    admin_writer.write("Restart", config["folder_path"])
     #time.sleep(config["restart_time"])
     stop_processes()
