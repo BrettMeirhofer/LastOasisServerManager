@@ -201,13 +201,21 @@ def update_game():
         "login anonymous +app_update 920720 validate -beta sdktest +quit"
     ]
 
-    try:
-        # Run the SteamCMD command
-        result = subprocess.run(steamcmd_command, check=True, capture_output=True, text=True)
-        print(result.stdout)
-    except subprocess.CalledProcessError as e:
-        print(f"An error occurred: {e}")
-        print(e.output)
+    process = subprocess.Popen(steamcmd_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+    # Read and print the output line by line
+    while True:
+        output = process.stdout.readline()
+        if output == '' and process.poll() is not None:
+            break
+        if output:
+            print(output.strip())
+
+    # Capture any remaining output
+    stdout, stderr = process.communicate()
+    print(stdout)
+    if stderr:
+        print(stderr)
 
 
 def main():
