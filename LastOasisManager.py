@@ -197,11 +197,8 @@ def update_game():
     print("Starting steam update")
     steamcmd_command = [
         "{}steamcmd".format(config["steam_cmd_path"]),
-        "+login", "anonymous",
         "+force_install_dir", config["folder_path"],
-        "+app_update 920720 -beta sdktest"
-        "validate",
-        "+quit"
+        "login anonymous +app_update 920720 validate -beta sdktest +quit"
     ]
 
     try:
