@@ -198,7 +198,7 @@ def update_game():
     steamcmd_command = [
         "{}steamcmd".format(config["steam_cmd_path"]),
         "+force_install_dir", config["folder_path"],
-        "login anonymous +app_update 920720 validate -beta sdktest +quit"
+        "login anonymous +app_update 920720 validate -beta sdktest"
     ]
 
     process = subprocess.Popen(steamcmd_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
