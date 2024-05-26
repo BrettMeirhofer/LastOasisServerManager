@@ -194,6 +194,7 @@ def restart_all_tiles(wait):
 
 def update_game():
     # Define the SteamCMD command
+    print("Starting steam update")
     steamcmd_command = [
         "{}steamcmd".format(config["steam_cmd_path"]),
         "+login", "anonymous",
